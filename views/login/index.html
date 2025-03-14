@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="login.css" />
+		<script src="login.js" defer></script>
+		<title>Instagram Clone</title>
+	</head>
+	<body>
+		<div class="container-login">
+			<h1>Instagram</h1>
+			<div class="login-content">
+				<form id="login-user">
+					<input
+						type="text"
+						name="username"
+						id="username"
+						placeholder="Teléfono, usuario o correo electrónico"
+					/>
+					<input
+						type="password"
+						name="password"
+						id="user-password"
+						placeholder="Contraseña"
+					/>
+					<button type="submit" id="login-action">
+						Iniciar sesión
+					</button>
+				</form>
+
+				<div class="separator">
+					<div class="line"></div>
+					<div class="text">o</div>
+					<div class="line"></div>
+				</div>
+
+				<a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
+
+				<p class="signup-text">
+					¿No tienes una cuenta?
+					<a
+						href="http://localhost:8080/auth/register"
+						class="signup-link"
+						>Regístrate</a
+					>
+				</p>
+			</div>
+		</div>
+	</body>
+</html>
