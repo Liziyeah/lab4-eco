@@ -9,19 +9,91 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    // Función para mostrar los estados de carga
-    function showLoading(element, message = "Cargando...") {
-        element.innerHTML = `<div class="empty-state">${message}</div>`;
-    }
+    const socket = io("/", { path: "/real-time" });
 
-    // Función para mostrar errores
-    function showError(element, message = "Error al cargar los datos.") {
-        element.innerHTML = `<div class="empty-state">${message}</div>`;
-    }
+    socket.on('connect', () => {
+        console.log('Conectado al servidor Socket.IO');
+    });
+    socket.on('new-post', (post) => {
+ 
+        mostrarNotificacion(`Nueva publicación de ${post.username}: ${post.title}`);
+
+        if (resultadoPosts.querySelector('.post')) {
+            agregarNuevaPublicacion(post);
+        }
+    });
+    
+    socket.on('new-user', (user) => {
+        mostrarNotificacion(`Nuevo usuario registrado: ${user.username}`);
+        
+        if (resultado.querySelector('.user-item')) {
+            agregarNuevoUsuario(user);
+        }
+    });
+
+    const mostrarNotificacion = (mensaje) => {
+        const notificacion = document.createElement('div');
+        notificacion.className = 'notification';
+        notificacion.textContent = mensaje;
+        document.body.appendChild(notificacion);
+        
+        setTimeout(() => {
+            notificacion.classList.add('show');
+        }, 10);
+        
+        setTimeout(() => {
+            notificacion.classList.remove('show');
+            setTimeout(() => notificacion.remove(), 500);
+        }, 5000);
+    };
+    
+
+    const agregarNuevaPublicacion = (post) => {
+        const postElement = document.createElement('div');
+        postElement.className = 'post';
+        postElement.innerHTML = `
+            <h3>${post.title}</h3>
+            <p><strong>Autor:</strong> ${post.name} (@${post.username})</p>
+            <p>${post.description}</p>
+            <img src="${post.url}" class="post-image" alt="Imagen de la publicación">
+        `;
+        
+
+        postElement.classList.add('new-item');
+        
+
+        resultadoPosts.insertBefore(postElement, resultadoPosts.firstChild);
+    
+        setTimeout(() => {
+            postElement.classList.remove('new-item');
+        }, 1000);
+    };
+    
+    const agregarNuevoUsuario = (user) => {
+        const userElement = document.createElement('div');
+        userElement.className = 'user-item';
+        userElement.innerHTML = `
+            <strong>${user.name}</strong>
+            <span>@${user.username}</span>
+        `;
+    
+        userElement.classList.add('new-item');
+
+        resultado.insertBefore(userElement, resultado.firstChild);
+        setTimeout(() => {
+            userElement.classList.remove('new-item');
+        }, 1000);
+    };
+
+    const mostrarCargando = (elemento, mensaje = "Cargando...") => {
+        elemento.innerHTML = `<div class="empty-state">${mensaje}</div>`;
+    };
+    const mostrarError = (elemento, mensaje = "Error al cargar los datos.") => {
+        elemento.innerHTML = `<div class="empty-state">${mensaje}</div>`;
+    };
     
     btnUsuarios.addEventListener("click", async () => {
-        // Mostrar estado de carga
-        showLoading(resultado);
+        mostrarCargando(resultado);
         
         try {
             const response = await fetch("http://localhost:8080/api/users");
@@ -43,13 +115,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         } catch (error) {
             console.error("Error al obtener usuarios:", error); 
-            showError(resultado, "No se pudieron cargar los usuarios. Inténtalo de nuevo más tarde.");
+            mostrarError(resultado, "No se pudieron cargar los usuarios. Inténtalo de nuevo más tarde.");
         }
     });
-
     btnPublicaciones.addEventListener("click", async () => {
-        // Mostrar estado de carga
-        showLoading(resultadoPosts);
+        mostrarCargando(resultadoPosts);
         
         try {
             const response = await fetch("http://localhost:8080/api/posts");
@@ -72,11 +142,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         } catch (error) {
             console.error("Error al obtener publicaciones:", error); 
-            showError(resultadoPosts, "No se pudieron cargar las publicaciones. Inténtalo de nuevo más tarde.");
+            mostrarError(resultadoPosts, "No se pudieron cargar las publicaciones. Inténtalo de nuevo más tarde.");
         }
     });
-
-    // Inicialmente mostrar mensajes de estado vacío
     resultado.innerHTML = `<div class="empty-state">Haz clic en "Ver Usuarios" para mostrar los usuarios registrados.</div>`;
     resultadoPosts.innerHTML = `<div class="empty-state">Haz clic en "Ver Publicaciones" para mostrar las publicaciones.</div>`;
 });
