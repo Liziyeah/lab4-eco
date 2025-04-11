@@ -80,7 +80,7 @@ app.post('/api/auth/login', (req, res) => {
 	res.json({ username, name: user.name });
 });
 
-// holaaaa
+// 404
 app.use((_, res) => {
 	res.json({
 		message: 'Page not found',
