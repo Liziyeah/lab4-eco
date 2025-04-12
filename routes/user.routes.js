@@ -14,6 +14,8 @@ router.get('/api/users', (_, res) => {
   }));
   
   res.json(users);
-});
+})
 
 module.exports = initUserRoutes;
+
+//Ecogram con nueva arquitectura

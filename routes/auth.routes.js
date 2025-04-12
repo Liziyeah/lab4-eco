@@ -26,7 +26,6 @@ router.post('/api/auth/register', (req, res) => {
 
   db.users.push({ username, name, password });
   socketService.emitEvent('new-user', { username, name });
-
   res.status(201).json({ message: 'Usuario registrado con éxito.' });
 });
 
@@ -46,7 +45,6 @@ router.post('/api/auth/login', (req, res) => {
   }
 
   socketService.emitEvent('user-login', { username, name: user.name });
-
   res.json({ username, name: user.name });
 });
 
